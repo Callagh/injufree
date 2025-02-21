@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up to Injufree</title>
-    <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind via CDN -->
+    <link href="../dist/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
@@ -24,39 +24,40 @@
             <input type="password" placeholder="Confirm your password" id="confirmedPassword" name="confirmedPassword" required 
                 class="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm border-gray-300">
             
-            <input type="hidden" name="signUp">
+            <input type="hidden" name="action" value="signUp">
             
-            <!-- Checkbox with Peer -->
+            
             <div >
-                <input type="checkbox" id="extraFieldsCheckbox" class="peer hidden">
-                <label for="extraFieldsCheckbox" class="ml-2 text-sm text-gray-600 cursor-pointer bg-gray-200 px-3 py-1 rounded-md hover:bg-gray-300">
+                <input type="checkbox" id="extra" class="peer hidden" name="extra">
+
+                <label for="extra" class="ml-2 text-sm text-gray-600 cursor-pointer bg-gray-200 px-3 py-1 rounded-md hover:bg-gray-300">
                     Show more options
                 </label>
 
 
 
-                <!-- Hidden Fields (Appear When Checkbox is Checked) -->
+                
                 <div class="hidden peer-checked:block mt-4 space-y-4">
                     <p class="font-bold">You must be older than 16 years or have an adults permission to enter the below information</p>
                     
                     <h3>Choose your assigned gender at birth:</h3>
                     <div class="flex items-center space-x-4 ">
                         
-                        <!-- Male Radio Button -->
-                        <input type="radio" id="male" name="gender"
+                        
+                        <input type="radio" id="male" name="genderAtBirth" value="male"
                             class="h-5 w-5 ">
                         <label for="male" class="text-sm font-medium text-gray-600">Male</label>
                     
-                        <!-- Female Radio Button -->
-                        <input type="radio" id="female" name="gender"
+                        
+                        <input type="radio" id="female" name="genderAtBirth" value="female"
                             class="h-5 w-5" >
                         <label for="female" class="text-sm font-medium text-gray-600">Female</label>
                     </div>
                     
-                    <!-- Date of Birth Field -->
+                    
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-600">Date of Birth</label>
-                        <input type="date" name="dob" placeholder="Enter Date of Birth"
+                        <input type="date" name="DOB" placeholder="Enter Date of Birth"
                             class="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm border-gray-300">
                     </div>
                     
