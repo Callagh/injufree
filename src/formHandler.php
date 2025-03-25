@@ -1,7 +1,8 @@
 <?php
 
-require "./db.php";
+require "db.php";
 session_start();
+$email = mysqli_real_escape_string($conn, $_POST['email']);
 
 if (!isset($_POST['action'])) {
     setErrorAndRedirect("Invalid request.");
@@ -9,14 +10,20 @@ if (!isset($_POST['action'])) {
 
 switch ($_POST['action']) {
     case 'signIn':
-        echo "You signed in";
+        $password = $_POST['password'];
+        verifyUser($conn, $email, $password);
+
         break;
 
     case 'signUp':
         
 
         $name = mysqli_real_escape_string($conn, $_POST['name']);
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+        if(!uniqueEmail($conn, $_POST['email'])){
+            setErrorAndRedirect("Email is already is use");
+        }
+        
 
         if ($_POST['password'] !== $_POST['confirmedPassword']) {
             setErrorAndRedirect("Passwords do not match");
@@ -66,5 +73,48 @@ function insertUser($conn, $name, $email, $password, $DOB = null, $genderAtBirth
     if (!mysqli_stmt_execute($stmt)) {
         setErrorAndRedirect("Error: " . mysqli_error($conn));
     }
+}
+
+function verifyUser($conn, $email, $password){
+
+    $stmt = $conn->prepare("SELECT password, name, id, DOB, genderAtBirth FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if($stmt->num_rows >0){
+        $stmt->bind_result($hashedPassword, $name, $id, $DOB, $genderAtBirth);
+        $stmt->fetch();
+        mysqli_stmt_close($stmt);  
+
+        if(password_verify($password, $hashedPassword)){
+            $_SESSION['name'] = $name;
+            $_SESSION['id'] = $id;
+            $_SESSION['DOB'] = $DOB;
+            $_SESSION['genderAtBirth']= $genderAtBirth;
+            header("Location: ./homePage.php");
+            exit();
+
+        }else{
+            setErrorAndRedirect("Incorrect password");
+        }
+
+    }else{
+        setErrorAndRedirect("User not found");
+    }
+
+}
+
+function uniqueEmail($conn, $email){
+
+    $stmt = $conn->prepare("SELECT email FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $isUnique = ($stmt->num_rows == 0);  
+    mysqli_stmt_close($stmt);  
+
+    return $isUnique;
 }
 ?>
