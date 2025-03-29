@@ -43,7 +43,11 @@ switch ($_POST['action']) {
         
         insertUser($conn, $name, $email, $password, $DOB, $genderAtBirth);
 
+        // Set session variables
         $_SESSION['name'] = $name;
+        $_SESSION['DOB'] = $DOB;
+        $_SESSION['genderAtBirth'] = $genderAtBirth;
+        
         header("Location: ./homePage.php");
         exit();
 
