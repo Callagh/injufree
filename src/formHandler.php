@@ -26,27 +26,41 @@ switch ($_POST['action']) {
         
 
         if ($_POST['password'] !== $_POST['confirmedPassword']) {
-            setErrorAndRedirect("Passwords do not match");
+            $_SESSION['error'] = "Passwords do not match";
+            header("Location: ./signUp.php");
+            exit();
         }
 
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         // Check for extra fields and consent
-        $DOB = $genderAtBirth = null;
-        if (!empty($_POST['extra']) && !empty($_POST['consent'])) {
+        $DOB = null;
+        if (!empty($_POST['DOB'])) {
+            // Calculate age from DOB
+            $dob = new DateTime($_POST['DOB']);
+            $today = new DateTime();
+            $age = $today->diff($dob)->y;
+            
+            if ($age < 16) {
+                $_SESSION['error'] = "You must be 16 or older to create an account";
+                header("Location: ./signUp.php");
+                exit();
+            }
+            
             $DOB = mysqli_real_escape_string($conn, $_POST['DOB']);
-            $genderAtBirth = mysqli_real_escape_string($conn, $_POST['genderAtBirth']);
-        } elseif (!empty($_POST['extra']) && empty($_POST['consent'])) {
-            setErrorAndRedirect("You have chosen to submit more information but have not consented to the storage of it");
         }
 
+        if (!empty($_POST['extra']) && empty($_POST['consent'])) {
+            $_SESSION['error'] = "You have chosen to submit more information but have not consented to the storage of it";
+            header("Location: ./signUp.php");
+            exit();
+        }
         
-        insertUser($conn, $name, $email, $password, $DOB, $genderAtBirth);
+        insertUser($conn, $name, $email, $password, $DOB);
 
         // Set session variables
         $_SESSION['name'] = $name;
         $_SESSION['DOB'] = $DOB;
-        $_SESSION['genderAtBirth'] = $genderAtBirth;
         
         header("Location: ./homePage.php");
         exit();
@@ -63,11 +77,11 @@ function setErrorAndRedirect($message) {
     exit();
 }
 
-function insertUser($conn, $name, $email, $password, $DOB = null, $genderAtBirth = null) {
-    if ($DOB && $genderAtBirth) {
-        $sql = "INSERT INTO users (name, email, password, DOB, genderAtBirth) VALUES (?, ?, ?, ?, ?)";
+function insertUser($conn, $name, $email, $password, $DOB = null) {
+    if ($DOB) {
+        $sql = "INSERT INTO users (name, email, password, DOB) VALUES (?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sssss", $name, $email, $password, $DOB, $genderAtBirth);
+        mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $password, $DOB);
     } else {
         $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
@@ -80,14 +94,13 @@ function insertUser($conn, $name, $email, $password, $DOB = null, $genderAtBirth
 }
 
 function verifyUser($conn, $email, $password){
-
-    $stmt = $conn->prepare("SELECT password, name, id, DOB, genderAtBirth FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT password, name, id, DOB FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if($stmt->num_rows >0){
-        $stmt->bind_result($hashedPassword, $name, $id, $DOB, $genderAtBirth);
+        $stmt->bind_result($hashedPassword, $name, $id, $DOB);
         $stmt->fetch();
         mysqli_stmt_close($stmt);  
 
@@ -95,7 +108,6 @@ function verifyUser($conn, $email, $password){
             $_SESSION['name'] = $name;
             $_SESSION['id'] = $id;
             $_SESSION['DOB'] = $DOB;
-            $_SESSION['genderAtBirth']= $genderAtBirth;
             header("Location: ./homePage.php");
             exit();
 
@@ -106,7 +118,6 @@ function verifyUser($conn, $email, $password){
     }else{
         setErrorAndRedirect("User not found");
     }
-
 }
 
 function uniqueEmail($conn, $email){

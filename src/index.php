@@ -46,7 +46,7 @@
             <div class="text-center text-green-600 space-x-2">
                 <a href="#" class="text-sm hover:text-green-700 underline transition-colors duration-200">Forgot password?</a>
                 <span class="text-gray-400">|</span>
-                <a href="signUp.html" class="text-sm hover:text-green-700 underline transition-colors duration-200">Sign up</a>
+                <a href="signUp.php" class="text-sm hover:text-green-700 underline transition-colors duration-200">Sign up</a>
             </div>
             
         </form>

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: ./src/homePage.php
+Allow: ./src/results.php
+Allow: ./images/
+Disallow: ./src/
+Disallow: ./src/restCalc.php 
