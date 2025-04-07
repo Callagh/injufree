@@ -149,35 +149,35 @@ if ($DOB && $DOB !== '') {
         <div class="bg-white/95 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl w-full max-w-md order-2 lg:order-3">
             <h3 class="text-xl font-semibold text-green-700 mb-4">Field Descriptions</h3>
             <div class="space-y-4 text-green-600">
-                <div>
+            <div>
                     <h4 class="font-medium text-green-700">Age</h4>
                     <p class="text-sm">Your current age in years. Used to adjust recovery recommendations based on age-related factors.</p>
-                </div>
-                <div>
+            </div>
+            <div>
                     <h4 class="font-medium text-green-700">Weight (kg)</h4>
                     <p class="text-sm">Your body weight in kilograms. Used to calculate protein needs and adjust recovery recommendations.</p>
-                </div>
-                <div>
+            </div>
+            <div>
                     <h4 class="font-medium text-green-700">Experience Level</h4>
                     <p class="text-sm">Your training experience level. Beginners typically need more recovery time than experienced athletes.</p>
-                </div>
-                <div>
+            </div>
+            <div>
                     <h4 class="font-medium text-green-700">Workout Intensity</h4>
                     <p class="text-sm">The intensity of your typical workouts. Higher intensity workouts require more recovery time.</p>
-                </div>
-                <div>
+            </div>
+            <div>
                     <h4 class="font-medium text-green-700">Recovery Status</h4>
                     <p class="text-sm">Whether you're recovering from an injury or in normal training. Injury recovery requires longer rest periods.</p>
                 </div>
-                <div>
+            <div>
                     <h4 class="font-medium text-green-700">Protein Intake (g/day)</h4>
                     <p class="text-sm">Your daily protein consumption in grams. Adequate protein is crucial for muscle recovery.</p>
                 </div>
                 <div>
                     <h4 class="font-medium text-green-700">Water Intake (L/day)</h4>
                     <p class="text-sm">Your daily water consumption in liters. Proper hydration is essential for recovery.</p>
-                </div>
-                <div>
+            </div>
+            <div>
                     <h4 class="font-medium text-green-700">Sleep Hours</h4>
                     <p class="text-sm">Your average daily sleep duration in hours. Quality sleep is vital for recovery and performance.</p>
                 </div>

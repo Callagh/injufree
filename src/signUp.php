@@ -1,144 +1,86 @@
-<!DOCTYPE html>
 <?php
 session_start();
-$error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
-unset($_SESSION['error']); // Clear the error after displaying it
 ?>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up to Injufree</title>
+    <title>Sign Up - Injufree</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="flex items-center justify-center min-h-screen relative font-['Inter'] bg-gradient-to-br from-green-50 to-green-100">
     <header class="absolute top-0 left-0 w-full bg-gradient-to-r from-green-600 to-green-500 text-white py-4 shadow-md flex justify-between px-8 items-center">
-        <h1 class="text-3xl font-bold cursor-pointer hover:text-green-100 transition-colors duration-200" onclick="window.location.href='homePage.php'">
-            Injufree
-        </h1>
+        <div class="flex items-center">
+            <img src="../images/logo.png" 
+                 alt="Injufree Logo" 
+                 class="w-[50px] h-[50px] mr-4">
+            <h1 class="text-3xl font-bold cursor-pointer hover:text-green-100 transition-colors duration-200" onclick="window.location.href='./homePage.php'">
+                Injufree
+            </h1>
+        </div>
 
         <img src="../images/homeButton.png" 
              alt="Home" 
              class="w-[50px] h-[50px] cursor-pointer hover:opacity-90 transition-opacity duration-200"
-             onclick="window.location.href='homePage.php'">
+             onclick="window.location.href='./homePage.php'">
     </header>
 
     <div class="bg-white/95 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl w-full max-w-md mt-20">
-        <h2 class="text-3xl font-extrabold text-center text-green-700 mb-8">Create Account</h2>
+        <h2 class="text-3xl font-bold text-center text-green-700 mb-8">Create Account</h2>
 
-        <?php if (!empty($error)): ?>
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-            <p class="text-red-600 text-sm"><?php echo htmlspecialchars($error); ?></p>
-        </div>
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <?php 
+                echo $_SESSION['error'];
+                unset($_SESSION['error']);
+                ?>
+            </div>
         <?php endif; ?>
 
-        <form id="signUpForm" action="formHandler.php" method="POST" class="space-y-6">
-            <input type="text" placeholder="Enter your first name" id="name" name="name" required 
-                class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-            
-            <input type="email" placeholder="Enter your email" id="email" name="email" required 
-                class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-            
-            <input type="password" placeholder="Create your password" id="password" name="password" required 
-                class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-            
-            <input type="password" placeholder="Confirm your password" id="confirmedPassword" name="confirmedPassword" required 
-                class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-            
-            <input type="hidden" name="action" value="signUp">
-            
+        <form action="formHandler.php" method="POST" class="space-y-6">
+            <input type="hidden" name="signup" value="true">
+
             <div>
-                <input type="checkbox" id="extra" class="peer hidden" name="extra">
-
-                <label for="extra" class="ml-2 text-sm text-green-600 cursor-pointer bg-green-50 px-4 py-2 rounded-xl hover:bg-green-100 transition-colors duration-200 inline-block">
-                    Show more options
-                </label>
-                
-                <div class="hidden peer-checked:block mt-6 space-y-6 p-4 bg-green-50 rounded-xl">
-                    <p class="font-bold text-green-700">You must be older than 16 years or have an adults permission to enter the below information</p>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-green-600 mb-1">Date of Birth</label>
-                        <input type="date" name="DOB" id="dob" placeholder="Enter Date of Birth"
-                            class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                    </div>
-
-                    <div class="flex items-center space-x-3">
-                        <input type="checkbox" id="consent" name="consent" class="h-5 w-5 text-green-500 rounded border-green-300">
-                        <label for="consent" class="text-sm text-green-600">I consent to the storage of the above information in line with GDPR guidelines</label>
-                    </div>
-                </div>
+                <label for="name" class="block text-lg font-medium text-green-700">Name</label>
+                <input type="text" id="name" name="name" required
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-green-300 rounded-md text-sm shadow-sm placeholder-green-400
+                              focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
             </div>
 
-            <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02]">
+            <div>
+                <label for="email" class="block text-lg font-medium text-green-700">Email</label>
+                <input type="email" id="email" name="email" required
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-green-300 rounded-md text-sm shadow-sm placeholder-green-400
+                              focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label for="password" class="block text-lg font-medium text-green-700">Password</label>
+                <input type="password" id="password" name="password" required
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-green-300 rounded-md text-sm shadow-sm placeholder-green-400
+                              focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label for="dateOfBirth" class="block text-lg font-medium text-green-700">Date of Birth (Optional)</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth"
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-green-300 rounded-md text-sm shadow-sm placeholder-green-400
+                              focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-[1.02]">
                 Sign Up
             </button>
 
-            <div class="text-center text-green-600">
-                <a href="index.php" class="text-sm hover:text-green-700 underline transition-colors duration-200">Already have an account? Sign in</a>
-            </div>
+            <p class="text-center text-green-700">
+                Already have an account? 
+                <a href="./index.php" class="text-green-600 hover:text-green-700 font-semibold">Sign In</a>
+            </p>
         </form>
     </div>
-
-    <img src="../images/logo.png" alt="Injufree Logo" 
-         class="fixed bottom-5 left-5 w-24 opacity-90 hover:opacity-100 transition-opacity duration-200">
-
-    <script>
-        document.getElementById('dob').addEventListener('change', function() {
-            const dob = new Date(this.value);
-            const today = new Date();
-            const age = today.getFullYear() - dob.getFullYear();
-            const monthDiff = today.getMonth() - dob.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-                age--;
-            }
-            
-            const consentCheckbox = document.getElementById('consent');
-            const extraCheckbox = document.getElementById('extra');
-            const extraLabel = extraCheckbox.nextElementSibling;
-            const submitButton = document.querySelector('button[type="submit"]');
-            
-            if (age < 16) {
-                // Disable form submission for users under 16
-                submitButton.disabled = true;
-                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-                submitButton.textContent = 'You must be 16 years or older to store this data';
-            } else {
-                // Enable form submission for users 16 or older
-                submitButton.disabled = false;
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                submitButton.textContent = 'Sign Up';
-            }
-        });
-
-        // Handle unchecking the extra options
-        document.getElementById('extra').addEventListener('change', function() {
-            const extraLabel = this.nextElementSibling;
-            if (!this.checked) {
-                // Clear the DOB field when extra options are unchecked
-                document.getElementById('dob').value = '';
-                // Reset the submit button state
-                const submitButton = document.querySelector('button[type="submit"]');
-                submitButton.disabled = false;
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                submitButton.textContent = 'Sign Up';
-                // Change label text back to "Show more options"
-                extraLabel.textContent = 'Show more options';
-            } else {
-                // Change label text to "Show less options"
-                extraLabel.textContent = 'Show less options';
-            }
-        });
-
-        // Clear session when the page is closed
-        window.addEventListener('beforeunload', function() {
-            // Create a synchronous XMLHttpRequest to clear the session
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'clearSession.php', false); // false makes the request synchronous
-            xhr.send();
-        });
-    </script>
 </body>
 </html>

@@ -1,135 +1,66 @@
 <?php
-
-require "db.php";
 session_start();
-$email = mysqli_real_escape_string($conn, $_POST['email']);
+require_once('db.php');
 
-if (!isset($_POST['action'])) {
-    setErrorAndRedirect("Invalid request.");
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+    $dateOfBirth = isset($_POST['dateOfBirth']) ? $_POST['dateOfBirth'] : null;
 
-switch ($_POST['action']) {
-    case 'signIn':
-        $password = $_POST['password'];
-        verifyUser($conn, $email, $password);
-
-        break;
-
-    case 'signUp':
-        
-
-        $name = mysqli_real_escape_string($conn, $_POST['name']);
-
-        if(!uniqueEmail($conn, $_POST['email'])){
-            setErrorAndRedirect("Email is already is use");
-        }
-        
-
-        if ($_POST['password'] !== $_POST['confirmedPassword']) {
-            $_SESSION['error'] = "Passwords do not match";
+    if (isset($_POST['signup'])) {
+        if (empty($email) || empty($password) || empty($name)) {
+            $_SESSION['error'] = "Please fill in all required fields.";
             header("Location: ./signUp.php");
             exit();
         }
 
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Check for extra fields and consent
-        $DOB = null;
-        if (!empty($_POST['DOB'])) {
-            // Calculate age from DOB
-            $dob = new DateTime($_POST['DOB']);
-            $today = new DateTime();
-            $age = $today->diff($dob)->y;
-            
-            if ($age < 16) {
-                $_SESSION['error'] = "You must be 16 or older to create an account";
-                header("Location: ./signUp.php");
-                exit();
-            }
-            
-            $DOB = mysqli_real_escape_string($conn, $_POST['DOB']);
-        }
+        $stmt = $conn->prepare("INSERT INTO users (email, password, name, DOB) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $email, $hashedPassword, $name, $dateOfBirth);
 
-        if (!empty($_POST['extra']) && empty($_POST['consent'])) {
-            $_SESSION['error'] = "You have chosen to submit more information but have not consented to the storage of it";
-            header("Location: ./signUp.php");
-            exit();
-        }
-        
-        insertUser($conn, $name, $email, $password, $DOB);
-
-        // Set session variables
-        $_SESSION['name'] = $name;
-        $_SESSION['DOB'] = $DOB;
-        
-        header("Location: ./homePage.php");
-        exit();
-
-    default:
-        setErrorAndRedirect("Invalid action.");
-}
-
-mysqli_close($conn);
-
-function setErrorAndRedirect($message) {
-    $_SESSION['error'] = $message;
-    header("Location: ./index.php");
-    exit();
-}
-
-function insertUser($conn, $name, $email, $password, $DOB = null) {
-    if ($DOB) {
-        $sql = "INSERT INTO users (name, email, password, DOB) VALUES (?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $password, $DOB);
-    } else {
-        $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $name, $email, $password);
-    }
-
-    if (!mysqli_stmt_execute($stmt)) {
-        setErrorAndRedirect("Error: " . mysqli_error($conn));
-    }
-}
-
-function verifyUser($conn, $email, $password){
-    $stmt = $conn->prepare("SELECT password, name, id, DOB FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if($stmt->num_rows >0){
-        $stmt->bind_result($hashedPassword, $name, $id, $DOB);
-        $stmt->fetch();
-        mysqli_stmt_close($stmt);  
-
-        if(password_verify($password, $hashedPassword)){
+        if ($stmt->execute()) {
+            $_SESSION['email'] = $email;
             $_SESSION['name'] = $name;
-            $_SESSION['id'] = $id;
-            $_SESSION['DOB'] = $DOB;
+            $_SESSION['DOB'] = $dateOfBirth;
             header("Location: ./homePage.php");
             exit();
-
-        }else{
-            setErrorAndRedirect("Incorrect password");
+        } else {
+            $_SESSION['error'] = "Error creating account. Please try again.";
+            header("Location: ./signUp.php");
+            exit();
+        }
+    } else {
+        if (empty($email) || empty($password)) {
+            $_SESSION['error'] = "Please enter both email and password.";
+            header("Location: ./index.php");
+            exit();
         }
 
-    }else{
-        setErrorAndRedirect("User not found");
+        $stmt = $conn->prepare("SELECT id, email, password, name, DOB FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['DOB'] = $user['DOB'];
+                header("Location: ./homePage.php");
+                exit();
+            } else {
+                $_SESSION['error'] = "Incorrect password.";
+                header("Location: ./index.php");
+                exit();
+            }
+        } else {
+            $_SESSION['error'] = "No account found with this email.";
+            header("Location: ./index.php");
+            exit();
+        }
     }
-}
-
-function uniqueEmail($conn, $email){
-
-    $stmt = $conn->prepare("SELECT email FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    $isUnique = ($stmt->num_rows == 0);  
-    mysqli_stmt_close($stmt);  
-
-    return $isUnique;
 }
 ?>
