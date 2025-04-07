@@ -6,9 +6,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
-    $dateOfBirth = isset($_POST['dateOfBirth']) ? $_POST['dateOfBirth'] : null;
+    $dateOfBirth = isset($_POST['dateOfBirth']) && !empty($_POST['dateOfBirth']) ? $_POST['dateOfBirth'] : '2000-01-01';
 
-    if (isset($_POST['signup'])) {
+    if (isset($_POST['action']) && $_POST['action'] === 'signUp') {
         if (empty($email) || empty($password) || empty($name)) {
             $_SESSION['error'] = "Please fill in all required fields.";
             header("Location: ./signUp.php");

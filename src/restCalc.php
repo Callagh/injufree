@@ -36,9 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($age <= 52) {
             $ageScore = 0.8;
         } elseif ($age <= 64) {
-            $ageScore = 0.7;
+            $ageScore = 0.6;
         } elseif ($age <= 79) {
-            $ageScore = 0.55;
+            $ageScore = 0.5;
         } else {
             $ageScore = 0.4;
         }
@@ -142,7 +142,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'experience' => $experience,
         'proteinIntake' => $proteinIntake,
         'isInjury' => $isInjury,
-        'weight' => $weight
+        'weight' => $weight,
+        'minProtein' => $minProtein
     ];
 
     $_SESSION['restResult'] = $result;
