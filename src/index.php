@@ -14,18 +14,18 @@ session_start();
 <body class="flex items-center justify-center min-h-screen relative font-['Inter'] bg-gradient-to-br from-green-50 to-green-100">
     <header class="absolute top-0 left-0 w-full bg-gradient-to-r from-green-600 to-green-500 text-white py-4 shadow-md flex justify-between px-8 items-center">
         <div class="flex items-center">
-            <img src="../images/logo.png" 
+            <img src="/images/logo.png" 
                  alt="Injufree Logo" 
                  class="w-[50px] h-[50px] mr-4">
-            <h1 class="text-3xl font-bold cursor-pointer hover:text-green-100 transition-colors duration-200" onclick="window.location.href='./homePage.php'">
+            <h1 class="text-3xl font-bold cursor-pointer hover:text-green-100 transition-colors duration-200" onclick="window.location.href='/src/homePage.php'">
                 Injufree
             </h1>
         </div>
 
-        <img src="../images/homeButton.png" 
+        <img src="/images/homebutton.png" 
              alt="Home" 
              class="w-[50px] h-[50px] cursor-pointer hover:opacity-90 transition-opacity duration-200"
-             onclick="window.location.href='./homePage.php'">
+             onclick="window.location.href='/src/homePage.php'">
     </header>
 
     <div class="bg-white/95 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl w-full max-w-md mt-20">
@@ -42,8 +42,8 @@ session_start();
 
         <form action="formHandler.php" method="POST" class="space-y-6">
             <div>
-                <label for="email" class="block text-lg font-medium text-green-700">Email</label>
-                <input type="email" id="email" name="email" required
+                <label for="username" class="block text-lg font-medium text-green-700">Username</label>
+                <input type="text" id="username" name="username" required
                        class="mt-1 block w-full px-3 py-2 bg-white border border-green-300 rounded-md text-sm shadow-sm placeholder-green-400
                               focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
             </div>
@@ -62,7 +62,7 @@ session_start();
 
             <p class="text-center text-green-700">
                 Don't have an account? 
-                <a href="./signUp.php" class="text-green-600 hover:text-green-700 font-semibold">Sign Up</a>
+                <a href="/src/signUp.php" class="text-green-600 hover:text-green-700 font-semibold">Sign Up</a>
             </p>
         </form>
     </div>

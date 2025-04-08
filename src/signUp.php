@@ -19,7 +19,7 @@ unset($_SESSION['error']);
             Injufree
         </h1>
 
-        <img src="../images/homeButton.png" 
+        <img src="/images/homeButton.png" 
              alt="Home" 
              class="w-[50px] h-[50px] cursor-pointer hover:opacity-90 transition-opacity duration-200"
              onclick="window.location.href='homePage.php'">
@@ -35,10 +35,7 @@ unset($_SESSION['error']);
         <?php endif; ?>
 
         <form id="signUpForm" action="formHandler.php" method="POST" class="space-y-6">
-            <input type="text" placeholder="Enter your first name" id="name" name="name" required 
-                class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-            
-            <input type="email" placeholder="Enter your email" id="email" name="email" required 
+            <input type="text" placeholder="Create a username" id="username" name="username" required 
                 class="mt-1 block w-full px-4 py-3 border rounded-xl shadow-sm border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
             
             <input type="password" placeholder="Create your password" id="password" name="password" required 
@@ -82,10 +79,21 @@ unset($_SESSION['error']);
         </form>
     </div>
 
-    <img src="../images/logo.png" alt="Injufree Logo" 
+    <img src="/images/logo.png" alt="Injufree Logo" 
          class="fixed bottom-5 left-5 w-24 opacity-90 hover:opacity-100 transition-opacity duration-200">
 
     <script>
+        document.getElementById('signUpForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmedPassword = document.getElementById('confirmedPassword').value;
+            
+            if (password !== confirmedPassword) {
+                e.preventDefault();
+                alert('Passwords do not match. Please try again.');
+                return false;
+            }
+        });
+
         document.getElementById('dob').addEventListener('change', function() {
             const dob = new Date(this.value);
             const today = new Date();
